@@ -54,7 +54,10 @@ public class resultshower extends JPanel{
 				Set<Map.Entry<Integer, byte[]>> enteries = result.entrySet();
 				if (fileloading.file2names!=null)
 				{
-					resultTxt = "File Names :"+fileloading.file2names+"<br>/n";
+					for (String filen : fileloading.file2names) {
+						filename += "File Names :"+filen+" /n";
+					}
+					
 				}
 				for (Entry<Integer, byte[]> entry : enteries) {
 					for (byte b : entry.getValue()) {
@@ -63,8 +66,8 @@ public class resultshower extends JPanel{
 
 					pattern = patternArr.toString().replaceAll("[,\\[\\]\\s+]", "");
 					hexValue = String.format("0x%x", entry.getKey());
-					resultTxt += "<html> <br><p>Pattern found: " + pattern + ", at offset: " + entry.getKey() + " ("
-							+ hexValue + ") within the file.</p><br> /n";
+					resultTxt += "Pattern found: " + pattern + ", at offset: " + entry.getKey() + " ("
+							+ hexValue + ") within the file.\n"+filename;
 					patternArr.clear();
 				}
 
@@ -72,7 +75,7 @@ public class resultshower extends JPanel{
 				resultTxt = "Pattern not found.";
 			}
 
-			resultTxt += "</html>";
+			resultTxt += "\n" ;
 
 			// ... update the view.
 

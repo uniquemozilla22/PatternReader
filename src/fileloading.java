@@ -42,7 +42,7 @@ public class fileloading extends JPanel{
 
 	JLabel loadFileSelected;
 	
-	static String file2names=null;
+	static String[] file2names=null;
 
 	fileloading(){
             //adding some designs
@@ -139,7 +139,7 @@ public class fileloading extends JPanel{
 		for (File file2 : files) {
 			if(file2.isFile())
 			{
-				file2names=file2.getName();
+				
 				try (InputStream is = new BufferedInputStream(new FileInputStream(file2))) {
 					int nextByte;
 					byte currentByte;
