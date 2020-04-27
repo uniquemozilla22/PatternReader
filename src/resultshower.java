@@ -51,19 +51,11 @@ public class resultshower extends JPanel{
 			String hexValue = "";
 			ArrayList<String> patternArr = new ArrayList<>();
 			if (result.size() != 0) {
-				Set<Map.Entry<Integer, byte[]>> enteries = result.entrySet();
-				if (fileloading.file2names!=null)
-				{
-					for (String filen : fileloading.file2names) {
-						filename += "File Names :"+filen+" /n";
-					}
-					
-				}
+				Set<Map.Entry<Integer, byte[]>> enteries = result.entrySet();					
 				for (Entry<Integer, byte[]> entry : enteries) {
 					for (byte b : entry.getValue()) {
 						patternArr.add(String.format("%x", b));
 					}
-
 					pattern = patternArr.toString().replaceAll("[,\\[\\]\\s+]", "");
 					hexValue = String.format("0x%x", entry.getKey());
 					resultTxt += "Pattern found: " + pattern + ", at offset: " + entry.getKey() + " ("
@@ -79,7 +71,7 @@ public class resultshower extends JPanel{
 
 			// ... update the view.
 
-			patternFound.setText(resultTxt) ;
+			patternFound.setText(filename + resultTxt) ;
 		}
     }
 
@@ -98,6 +90,7 @@ public class resultshower extends JPanel{
 		int patternLoopIndex = 0;
 
 		for (int index = 0; index < sourceLength; index++) {
+			
 			if (source.get(index) == pattern[patternLoopIndex]) {
 				++patternLoopIndex;
 			} else {
@@ -114,7 +107,9 @@ public class resultshower extends JPanel{
 			}
 		}
 		return answer;
-    }
+	}
+	
+
     public TreeMap<Integer, byte[]> indexOfPattern(ArrayList<Byte> source, Stack<byte[]> patternList) {
 
 		TreeMap<Integer, byte[]> answer = new TreeMap<>();

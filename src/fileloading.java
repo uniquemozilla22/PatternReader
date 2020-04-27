@@ -139,7 +139,7 @@ public class fileloading extends JPanel{
 		for (File file2 : files) {
 			if(file2.isFile())
 			{
-				
+
 				try (InputStream is = new BufferedInputStream(new FileInputStream(file2))) {
 					int nextByte;
 					byte currentByte;
