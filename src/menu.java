@@ -63,21 +63,6 @@ public class menu extends JPanel {
 		
 		}});
 		LoadPattern.setMnemonic(KeyEvent.VK_P);
-		
-		// Setting the Menu Item to Search for pattern
-		JMenuItem SearchPattern = new JMenuItem("3.Search Pattern",new ImageIcon("Images/folder.png"));
-		//setting the Tool Tip on the menu bar
-		SearchPattern.setToolTipText("Click to Search pattern");
-		SearchPattern.addActionListener(new ActionListener() {
-			//adding functionality to the item
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-                // TODO Auto-generated method stub
-                resultshower.showPattern.doClick();
-                		
-		
-		}});
-    	SearchPattern.setMnemonic(KeyEvent.VK_S);
     	
     	JMenuItem Exit = new JMenuItem("Exit",new ImageIcon("Images/logout.png"));
 		Exit.setToolTipText("Click to load the file");//setting the Tool Tip on the menu bar
@@ -92,7 +77,6 @@ public class menu extends JPanel {
 //    	adding Load and Exit Menu Items to File Menu
 		file.add(LoadFile);
 		file.add(LoadPattern);
-		file.add(SearchPattern);
     	file.add(Exit);
     	
 //    	adding info menu item to About Menu

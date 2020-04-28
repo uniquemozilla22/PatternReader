@@ -12,7 +12,9 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 import java.awt.event.ActionListener;
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -21,6 +23,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.TreeMap;
 import java.awt.event.ActionEvent;
 import javax.swing.JLabel;
 import java.awt.Font;
@@ -40,14 +43,19 @@ public class fileloading extends JPanel{
 	static JButton loadFileButton;
 	static JButton loadFolderButton;
 
-	JLabel loadFileSelected;
+	static JLabel loadFileSelected;
 	
 	static String[] file2names=null;
+	String filename ="FIle Name: ";
+	String finalresult;
 
 	fileloading(){
             //adding some designs
             setPreferredSize(new Dimension(1000, 100));// setting the dimension of the applications.
-            setBackground(Color.white);// setting the background color
+			setBackground(Color.white);// setting the background color
+			
+			// Implementing the Action Listener
+			ActionListener load = new loadListener();
 
 
             //Setting the Label for fileLoading
@@ -57,40 +65,8 @@ public class fileloading extends JPanel{
 
             //Setting a Button that chooses the file from ropsitory.
             loadFileButton= new JButton ("Select File ");
-            loadFileButton.setToolTipText("Click to open file Chooser.");
-			loadFileButton.addActionListener(new ActionListener(){
-		
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						// ... Point the current directory.
-						JFileChooser fileChooser = new JFileChooser(".//");
-						
-						fileChooser.setAcceptAllFileFilterUsed(true);
-						fileChooser.setCurrentDirectory(new java.io.File("."));
-						fileChooser.setDialogTitle("Select File/Folder");
-						fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-						
-			
-						try {
-							if (fileChooser.showOpenDialog(Driver.frame)==JFileChooser.APPROVE_OPTION) {
-								// ... Get the selected file
-							String file = fileChooser.getSelectedFile().toString();
-							if (file!=null) {
-								setFile(file);
-								loadFileSelected.setText(file);
-							}
-							}
-						} catch (Exception ex) {
-							// TODO: handle exception
-							JOptionPane.showMessageDialog(null,
-									"There seems be some issue with selection." + "\r\nERROR: " + ex.getMessage(), "Error!",
-									JOptionPane.PLAIN_MESSAGE);
-						}
-						
-						
-					}
-			});
-			
+			loadFileButton.setToolTipText("Click to open file Chooser.");
+			loadFileButton.addActionListener(load);
 			add(loadFileButton);
 			
 			loadFolderButton= new JButton ("Select Repository");
@@ -103,62 +79,34 @@ public class fileloading extends JPanel{
             add(loadFileSelected);
 
 
-    }
-
-	 // ... Setters
-	 public void setFile(String file) {
-		fileBytesArray = readFile(file);
 	}
+	
+	public class loadListener implements ActionListener{
 
-    public ArrayList<Byte> readFile(String file) {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			// TODO Auto-generated method stub
 
-		File RealFile = new File(file);
+			JFileChooser fileChooser = new JFileChooser();
+				fileChooser.setAcceptAllFileFilterUsed(true);
+				fileChooser.setCurrentDirectory(new java.io.File("."));
+				fileChooser.setDialogTitle("Select File/Folder");
+				fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 
-		ArrayList<Byte> fileBytes = new ArrayList<>();
+				try {
+					if (fileChooser.showOpenDialog(Driver.frame) == JFileChooser.APPROVE_OPTION) {
+						loadFileSelected.setText(fileChooser.getSelectedFile().toString());
+					}
+				} catch (Exception ex) {
+					// TODO: handle exception
+					JOptionPane.showMessageDialog(null,
+							"There is an error in the selection" + "\r\nERROR: " + ex.getMessage(), "Error!",
+							JOptionPane.PLAIN_MESSAGE);
+				}
 
-		if (RealFile.isFile()){
-		try (InputStream is = new BufferedInputStream(new FileInputStream(RealFile))) {
-			int nextByte;
-			byte currentByte;
-			// ... loop and store the byte in fileBytes
-			while ((nextByte = is.read()) != -1) {
-				currentByte = (byte) nextByte;
-				fileBytes.add(currentByte);
-			}
-		}catch (FileNotFoundException e) {
-			System.out.println("File not found");
-		} catch (IOException e) {
-			System.out.println("Error: " + e.getMessage());
 		}
 		
 	}
-	else if (RealFile.isDirectory())
-	{
-		File[] files = RealFile.listFiles();
 
-		for (File file2 : files) {
-			if(file2.isFile())
-			{
-
-				try (InputStream is = new BufferedInputStream(new FileInputStream(file2))) {
-					int nextByte;
-					byte currentByte;
-					// ... loop and store the byte in fileBytes
-					while ((nextByte = is.read()) != -1) {
-						currentByte = (byte) nextByte;
-						fileBytes.add(currentByte);
-					}
-				}catch (FileNotFoundException e) {
-					System.out.println("File not found");
-				} catch (IOException e) {
-					System.out.println("Error: " + e.getMessage());
-				}
-			
-			}
-		}
-
-	}
-	return fileBytes;
-    }
 
 }

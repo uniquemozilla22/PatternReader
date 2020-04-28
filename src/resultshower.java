@@ -14,113 +14,62 @@ import java.util.Set;
 
 public class resultshower extends JPanel{
 
-    static JButton showPattern;
-	JTextArea patternFound;
+	static JTextArea patternFound;
+	static String scanResult = "";
 
+	resultshower() {
+		// adding some designs
+		setPreferredSize(new Dimension(600, 400));// setting the dimension of the applications.
+		setBackground(Color.GRAY);// setting the background color
 
-    resultshower()
-    {
-        //adding some designs
-    setPreferredSize(new Dimension(600, 400));// setting the dimension of the applications.
-    setBackground(Color.GRAY);// setting the background color
+		// Implementing the Action Listener
+		ActionListener search = new searchListener();
 
-    // Initializing the Action Listener to the Class
-    ActionListener search = new SearchPatternBtnListener();
+		JButton scanningButton = new JButton("Scan File / Folder");
+		scanningButton.setToolTipText("Click me to Scan you file according to the pattern.");
+		add(scanningButton);
+		scanningButton.addActionListener(search);
 
-    showPattern = new JButton("Show Pattern Results");
-    showPattern.setToolTipText("Click me to show the results.");
-    showPattern.addActionListener(search);
-    add(showPattern);
+		patternFound = new JTextArea("No Pattern Found");
+		patternFound.setBounds(70, 50, 5, 6);
+		patternFound.setToolTipText("Your Pattern result will be shown here.");
+		add(patternFound);
 
-	patternFound = new JTextArea("No Pattern Found");
-	patternFound.setBounds(70,50,5,6);
-	patternFound.setToolTipText("Your Pattern result will be shown here.");
-    add(patternFound);
+	}
 
-    }
-
-    	// ... When user requests to search for pattern.
-	private class SearchPatternBtnListener implements ActionListener {
+	public class searchListener implements ActionListener {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			TreeMap<Integer, byte[]> result = searchPattern();
-			String pattern = "";
-			String filename= "";
-			String resultTxt = "";
-			String hexValue = "";
-			ArrayList<String> patternArr = new ArrayList<>();
-			if (result.size() != 0) {
-				Set<Map.Entry<Integer, byte[]>> enteries = result.entrySet();					
-				for (Entry<Integer, byte[]> entry : enteries) {
-					for (byte b : entry.getValue()) {
-						patternArr.add(String.format("%x", b));
-					}
-					pattern = patternArr.toString().replaceAll("[,\\[\\]\\s+]", "");
-					hexValue = String.format("0x%x", entry.getKey());
-					resultTxt += "Pattern found: " + pattern + ", at offset: " + entry.getKey() + " ("
-							+ hexValue + ") within the file.\n"+filename;
-					patternArr.clear();
-				}
-
-			} else {
-				resultTxt = "Pattern not found.";
+			// TODO Auto-generated method stub
+			scanResult = "";
+			try {
+				String pathName = fileloading.loadFileSelected.getText();
+				patternFound.setText(scanFileFolder(pathName));
+			} catch (Exception ee) {
+				ee.printStackTrace();
 			}
-
-			resultTxt += "\n" ;
-
-			// ... update the view.
-
-			patternFound.setText(filename + resultTxt) ;
 		}
-    }
 
+	}
 
-    public TreeMap<Integer, byte[]> searchPattern() {
-		return indexOfPattern(fileloading.fileBytesArray, pattern.patternListArray);
-    }
-
-    
-    public TreeMap<Integer, byte[]> indexOfPattern(ArrayList<Byte> source, byte[] pattern) {
-		int sourceLength = source.size();
-		int patternLength = pattern.length;
-		int offset = 0;
-		TreeMap<Integer, byte[]> answer = new TreeMap<>();
-
-		int patternLoopIndex = 0;
-
-		for (int index = 0; index < sourceLength; index++) {
-			
-			if (source.get(index) == pattern[patternLoopIndex]) {
-				++patternLoopIndex;
-			} else {
-				if (source.get(index) == pattern[0]) {
-					patternLoopIndex = 1;
-				} else {
-					patternLoopIndex = 0;
+	public static String scanFileFolder(String pathName) throws IOException {
+		File fileFolder = new File(pathName);
+		// boolean isDirectory = Files.isDirectory(file); // Check if it's a directory
+		if (fileFolder.isFile()) {
+			FileScanner fs = new FileScanner(fileFolder);
+			scanResult = fs.fileResult;
+		} else if (fileFolder.isDirectory()) {
+			scanResult += "Directory: " + fileFolder.getName() + "\r\n\r\n";
+			File[] files = fileFolder.listFiles();
+			for (File file : files) {
+				if(file.isFile()) {
+					FileScanner fs = new FileScanner(file);
+					scanResult += fs.fileResult;
 				}
 			}
-			if (patternLoopIndex == patternLength) {
-				offset = index - patternLength + 1;
-				answer.put(offset, pattern);
-				patternLoopIndex = 0;
-			}
 		}
-		return answer;
+		return scanResult;
 	}
-	
-
-    public TreeMap<Integer, byte[]> indexOfPattern(ArrayList<Byte> source, Stack<byte[]> patternList) {
-
-		TreeMap<Integer, byte[]> answer = new TreeMap<>();
-		TreeMap<Integer, byte[]> answerHolder = new TreeMap<>();
-
-		for (byte[] pattern : patternList) {
-			answerHolder = indexOfPattern(source, pattern);
-			answer.putAll(answerHolder);
-		}
-		return answer;
-	}
-    
 
 }
