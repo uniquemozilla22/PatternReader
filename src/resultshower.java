@@ -27,14 +27,20 @@ public class resultshower extends JPanel{
 
 		JButton scanningButton = new JButton("Scan File / Folder");
 		scanningButton.setToolTipText("Click me to Scan you file according to the pattern.");
-		add(scanningButton);
 		scanningButton.addActionListener(search);
 
-		patternFound = new JTextArea("No Pattern Found");
-		patternFound.setBounds(70, 50, 5, 6);
+		patternFound = new JTextArea("No Pattern Found",22,40);
 		patternFound.setToolTipText("Your Pattern result will be shown here.");
-		add(patternFound);
-
+				
+		JScrollPane scrollingTextArea= new JScrollPane(patternFound);
+		scrollingTextArea.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		
+		
+		
+		
+		add(scrollingTextArea);
+		add(scanningButton);
+		
 	}
 
 	public class searchListener implements ActionListener {
@@ -49,6 +55,7 @@ public class resultshower extends JPanel{
 			} catch (Exception ee) {
 				ee.printStackTrace();
 			}
+			
 		}
 
 	}
