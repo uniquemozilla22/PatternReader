@@ -101,7 +101,6 @@ public class FileScanner {
     	/**
 	 * Scans the file and calls other method for finding the index of the patterns 
 	 * 
-	 * @see https://stackoverflow.com/questions/7194522/how-to-putall-on-java-hashmap-contents-of-one-to-another-but-not-replace-existi
 	 */
 	private void scanningFIle() {
 		for (byte[] pattern : pattern.bytes) {
@@ -165,9 +164,6 @@ public class FileScanner {
 		 * @param <V> Generic Type Valye
 		 * @param map The map to sort
 		 * @return sorting the map by the key
-		 * 
-		 * @see https://stackoverflow.com/questions/2864840/treemap-sort-by-value
-		 * @see https://docs.oracle.com/javase/8/docs/api/java/util/TreeMap.html
 		 * 
 		 */
 		static <K extends Comparable<? super K>, V> SortedSet<Map.Entry<K, V>> sortingValuePairsByKeys(Map<K, V> map) {

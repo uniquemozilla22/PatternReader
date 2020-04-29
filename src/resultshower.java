@@ -87,9 +87,9 @@ public class resultshower extends JPanel{
 	 * This Method accepts the pathname in string and scans the file / folder for parsing.
 	 * 
 	 * This method throws the IO Exception if not file is found on the process of implementing this method.
-	 * @param pathName The string having the directory path.
+	 * @param path The string having the directory path.
 	 * @return it returns the parsed result.
-	 * @throws IOException
+	 * @throws IOException if any input exception is shown
 	 */
 	public static String scanFileFolder(String path) throws IOException {
 		
