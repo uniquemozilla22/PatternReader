@@ -21,27 +21,29 @@ import javax.swing.JTextArea;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.xml.bind.DatatypeConverter;
 
-
+/**
+ * This class extends the JPanel and is used to read and show the pattern that will be choosenby the user
+ * 
+ * @author Yogesh Bhattarai
+ *
+ */
 public class pattern extends JPanel {
 
   // ... Instance variables
 	/**
 	 * valid Byte patterns from pattern-file to scan in a file
 	 */
-	public static List<byte[]> bytesToScan = new ArrayList<byte[]>(
+	public static List<byte[]> bytes = new ArrayList<byte[]>(
 			Arrays.asList(DatatypeConverter.parseHexBinary("1ADF942853")));
   /**
 	 * invalid lines from pattern-file
 	 */
-	public static List<String> failedLines = new ArrayList<String>(Arrays.asList("123RSADNXJ", "12 er s d sd"));
+	public static List<String> FailedToScanLines = new ArrayList<String>(Arrays.asList("123RSADNXJ", "12 er s d sd"));
 
-	
-	
-  static Stack<byte[]> patternListArray;
   JLabel patternShower;
   JTextArea patternTextArea;
   static JButton patternLoaderBtn;
-  private JList<String> lstPatterns;
+  private JList<String> patternsLists;
 
   pattern() {
     // adding some designs
@@ -71,10 +73,10 @@ public class pattern extends JPanel {
     add(patternTextArea);
     
     
-    lstPatterns = new JList<String>();
-	lstPatterns.setListData(getSpacedPatternStrings());
-	lstPatterns.setBounds(10, 57, 478, 98);
-	add(lstPatterns);
+    patternsLists = new JList<String>();
+	patternsLists.setListData(getSpacedPatternStrings());
+	patternsLists.setBounds(10, 57, 478, 98);
+	add(patternsLists);
   }
 
   // ... When user requests to load pattern from file.
@@ -83,8 +85,8 @@ public class pattern extends JPanel {
     @Override
     public void actionPerformed(ActionEvent e) {
       
-      pattern.bytesToScan.clear();
-				failedLines.clear();
+      pattern.bytes.clear();
+				FailedToScanLines.clear();
 				
 				JFileChooser fileChooser = new JFileChooser();
 				fileChooser.setAcceptAllFileFilterUsed(true);
@@ -98,7 +100,7 @@ public class pattern extends JPanel {
 				try {
 					if (fileChooser.showOpenDialog(Driver.frame) == JFileChooser.APPROVE_OPTION) {
 						String patternFilePath = fileChooser.getSelectedFile().toString();
-						readPatternFile(patternFilePath);
+						readPattern(patternFilePath);
 					}
 				} catch (Exception ex) {
 					// TODO: handle exception
@@ -108,9 +110,9 @@ public class pattern extends JPanel {
 				}
 
 				// Pattern.
-				if (failedLines.size() > 0) {
-					String errorMessage = "These lines are not valid:\r\n";
-					for (String fLine : failedLines) {
+				if (FailedToScanLines.size() > 0) {
+					String errorMessage = "Not valid lines.:\r\n";
+					for (String fLine : FailedToScanLines) {
 						errorMessage += fLine + "\r\n";
 					}
 					JOptionPane.showMessageDialog(null, errorMessage + "Valid lines are imported.", "OOPS!", JOptionPane.PLAIN_MESSAGE);
@@ -118,67 +120,67 @@ public class pattern extends JPanel {
 				
 				// Display spaced byte pattern
 				String[] bytePatterns = getSpacedPatternStrings();
-				lstPatterns.setListData(bytePatterns);
+				patternsLists.setListData(bytePatterns);
     }
 
   }
 
   /**
-	 * Read and save patterns from a pattern file
+	 * The main task of this method is Reading the pattern 
 	 * 
-	 * @param patternFilePath the file path of pattern file
-	 * @throws IOException if the file could be read form the given path
+	 * @param filepathofpatternn The file path where the pattern file is situated
+	 * @throws IOException Throws exception where it couldn't find the file
 	 */
-	public static void readPatternFile(String patternFilePath) throws IOException {
-		BufferedReader reader;
-		reader = new BufferedReader(new FileReader(patternFilePath));
-		String line = reader.readLine();
+	public static void readPattern(String filepathofpatternn) throws IOException {
+		BufferedReader bfreader = new BufferedReader(new FileReader(filepathofpatternn));
+		String line = bfreader.readLine();
 
 		while (line != null) {
 			line = line.toUpperCase();
-			if (checkLine(line)) {
+			if (checkingLine(line)) {
 				line = line.replace(" ", "");
-				bytesToScan.add(DatatypeConverter.parseHexBinary(line));
+				bytes.add(DatatypeConverter.parseHexBinary(line));
 			} else {
-				failedLines.add(line);
+				FailedToScanLines.add(line);
 			}
 			// read next line
-			line = reader.readLine();
+			line = bfreader.readLine();
 		}
 
-		reader.close();
+		bfreader.close();
 
 	}
 	
 	/**
+	 *This method returns a logical patterns in a format to display. 
 	 * Returns the stored patterns in a format to display in the screen
 	 * 
 	 * @return the array of string in format of two digits and space
 	 */
 	public static String[] getSpacedPatternStrings() {
-		String[] result = new String[bytesToScan.size()];
-		// result = bytesToScan.toArray(result);
+		String[] result = new String[bytes.size()];
+		// result = bytes.toArray(result);
 		for (int i = 0; i < result.length; i++) {
-			result[i] = DatatypeConverter.printHexBinary(bytesToScan.get(i)).replaceAll("..(?!$)", "$0 ");
+			result[i] = DatatypeConverter.printHexBinary(bytes.get(i)).replaceAll("..(?!$)", "$0 ");
 		}
 		return result;
 	}
 	
-	/**
-	 * Validate if the line containes paired hex digits separate by space
+	/** 
+	 * This method simply checks the line if the line has hex digits by spacing.
 	 * 
-	 * @param line the line to be validated
-	 * @return if the line is valid or not
+	 * @param sentence Passed the line to be validated in string 
+	 * @return Boolean if the line is validated or not
 	 */
-	private static boolean checkLine(String line) {
-		line = line.trim();
-		if (!checkPairedHex(line))
+	private static boolean checkingLine(String sentence) {
+		sentence = sentence.trim();
+		if (!checkPairedHex(sentence))
 			return false;
 
-		if (!checkHex(line))
+		if (!checkHex(sentence))
 			return false;
 		
-		if (line.length() < 2)
+		if (sentence.length() < 2)
 			return false;
 		
 		return true;
@@ -189,10 +191,10 @@ public class pattern extends JPanel {
 
 
 	/**
-	 * Check if all the characters are hex digits
+	 * This method check whether there are hex digits or not.
 	 * 
-	 * @param line the line to be checked
-	 * @return the bool if the line passes the test
+	 * @param line The sentence to be checked
+	 * @return The Boolean to check hex
 	 */
 	private static boolean checkHex(String line) {
 		for (char hexChar : line.toCharArray()) {
@@ -204,10 +206,10 @@ public class pattern extends JPanel {
 	}
 
 	/**
-	 * Check if the line contains only two digits separated by space
+	 * This method has the ability to check if the line contains only two digits separated by space
 	 * 
 	 * @param line the line to be checked
-	 * @return the boo if the line passes
+	 * @return the boo if the line passes or doesnot passes
 	 */
 	private static boolean checkPairedHex(String line) {
 		String[] split = line.split(" ");

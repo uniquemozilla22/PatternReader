@@ -2,9 +2,28 @@ import java.awt.*;
 import javax.swing.*;
 import javax.swing.border.CompoundBorder;
 
-
+/**
+ * This class is created  to produce a GUI based Java application, designed to provide support tools to
+identify known byte-patterns (signatures) within file contents.
+ * 
+ * This System has the ability to  read the contents of files, and scan these contents for certain byte-patterns.
+ * 
+ * @author Yogesh Bhattarai (C7202513)
+ *
+ */
 public class Driver {
+	
+	/**
+	 * This is a Static Frame that can be accessed within any class of the project
+	 * 
+	 * THis frame contains all the panels.
+	 */
 	static JFrame  frame;
+	
+	/**	
+	 * Starting the Main Class.
+	 * @param args
+	 */
 	public static void main(String[] args) {
 	   
 	    	

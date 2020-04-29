@@ -12,6 +12,15 @@ import javax.swing.JPanel;
 
 
 @SuppressWarnings("serial")
+
+/**
+ * This class extend the JPanel.
+ * 
+ * This class has the setup menu bar for the appliation/ programme
+ * 
+ * @author Yogesh Bhattarai
+ *
+ */
 public class menu extends JPanel {
 	JMenuBar setupMenu()
     {
@@ -88,8 +97,14 @@ public class menu extends JPanel {
 		return menuBar;
     }
 	
+	/**
+	 * this class is a Action Listener used to create the information about the program.
+	 * 
+	 * 
+	 * @author Yogesh Bhattarai
+	 *
+	 */
 	
-//	this class is a Action Listener used to create the information about the programme
 	private class AboutAction implements ActionListener{
 
 		@Override
@@ -102,6 +117,12 @@ public class menu extends JPanel {
 			
 		}
 	}
+	/**
+	 * this class is a ActionListener and has the abitlity to exit the program
+	 * 
+	 * @author Yogesh Bhattarai
+	 *
+	 */
 	  // Declaring the Exit Listener
 	  class exitListener implements ActionListener{
 		@Override

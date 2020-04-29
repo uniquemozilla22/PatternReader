@@ -17,90 +17,108 @@ import java.util.TreeSet;
 import javax.xml.bind.DatatypeConverter;
 
 public class FileScanner {
+  
     /**
-	 * Sort the Value Pairs by key in a Map
-	 * 
-	 * @param <K> Generic Type Key
-	 * @param <V> Generic Type Valye
-	 * @param map The map to sort
-	 * @return sorted Map by key
-	 * 
-	 * @see https://stackoverflow.com/questions/2864840/treemap-sort-by-value
-	 * 
+	 * name of the file
 	 */
-	static <K extends Comparable<? super K>, V> SortedSet<Map.Entry<K, V>> entriesSortedByKeys(Map<K, V> map) {
-		SortedSet<Map.Entry<K, V>> sortedEntries = new TreeSet<Map.Entry<K, V>>(new Comparator<Map.Entry<K, V>>() {
-			@Override
-			public int compare(Map.Entry<K, V> e1, Map.Entry<K, V> e2) {
-				int res = e1.getKey().compareTo(e2.getKey());
-				return res != 0 ? res : 1;
-			}
-		});
-		sortedEntries.addAll(map.entrySet());
-		return sortedEntries;
-	}
-    /**
-	 * name of the file to be scanned for
-	 */
-	private String fileName = "";
+	private String NameofFile = "";
 
 	/**
-	 * bytes of the file saved as string
+	 * bytes of the file will be saved as string in it
 	 */
-	private byte[] fileContent;
+	private byte[] ReadingsInFile;
 
 	/**
-	 * Result of searched content
+	 * calling the TreeMap and sttting the result in ResultofSearching
 	 */
-	public Map<Integer, byte[]> searchResult = new TreeMap<Integer, byte[]>();
+	public Map<Integer, byte[]> ResultofSearching = new TreeMap<Integer, byte[]>();
 
 	/**
-	 * formatted result of the scan to be stored here
+	 * formating the string to add the file name and print it into the area.
 	 */
-	public String fileResult = "Filename: ";
+	public String formattedResult = "Filename: ";
     
-    public FileScanner(File file) throws IOException {
-        fileName = file.getName();
-        fileResult += fileName + "\r\n";
-        bytesFromFile(file);
-        scanFile();
-        fillFileResult();
+	
+	/**
+	 * this constructor scans the file and shows the pattern found.
+	 * 
+	 * This constructor has other methods called.
+	 * 
+	 * @param file contains the file given by the user
+	 */
+    public FileScanner(File file) {
+        NameofFile = file.getName();//getting the name of the file and putting it to a string 
+        formattedResult += NameofFile + "\r\n"; // formating the name of the file with logic.
+        
+        //using the try catch method for IOException if any file not found
+        try {
+			fileBytes(file);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+       // calling the method to scan the file.        
+        scanningFIle();
+        
+        //calling the method to fill the text area with result of the scanning
+        fillFormattedResult();
     }
+    
+    /**
+     * This method parses and fills the Scanned file results into the Text area in a proper format.
+     */
 
-    private void fillFileResult() {
+    private void fillFormattedResult() {
+    	
+    	//setting a boolean to false
 		boolean isPatternFound = false;
 
-		Set<Map.Entry<Integer, byte[]>> enteries = entriesSortedByKeys(searchResult);
 
-		if (searchResult.size() > 0) {
+		//sorting the values by key in search result and seetting it ot set<Map.Entry>
+		Set<Map.Entry<Integer, byte[]>> enteries = sortingValuePairsByKeys(ResultofSearching);
+
+		// if the search result has the size grater than zero
+		if (ResultofSearching.size() > 0) {
+			
+			//for each entry found the formating result is done
 			for (Entry<Integer, byte[]> entry : enteries) {
-				fileResult += String.format("Pattern found: %s, at offset: %d (0x%s) within the file.\r\n",
+				
+				//using the proper way to dyplay the entries and also converting them in required way.
+				formattedResult += String.format("Pattern found: %s, at offset: %d (0x%s) within the file.\r\n",
 						DatatypeConverter.printHexBinary(entry.getValue()), entry.getKey(),
 						Integer.toHexString(entry.getKey()));
 			}
+			//s the pattern is found then the vlaue of pattern found will be true
 			isPatternFound = true;
 		}
-
+		
+		// in case there are no patterns found
 		if (!isPatternFound)
-			fileResult += "No Patterns Found.\r\n";
-		fileResult += "\r\n";
-		// fileResult += DatatypeConverter.printHexBinary(fileContent) + "\r\n";
+			formattedResult += "No Patterns Found.\r\n";
+		formattedResult += "\r\n";
     }
     
     	/**
-	 * Scan file with pattern using Pattern static properties
+	 * Scans the file and calls other method for finding the index of the patterns 
 	 * 
 	 * @see https://stackoverflow.com/questions/7194522/how-to-putall-on-java-hashmap-contents-of-one-to-another-but-not-replace-existi
 	 */
-	private void scanFile() {
-		for (byte[] pattern : pattern.bytesToScan) {
-			Map<Integer, byte[]> tmp = new HashMap<Integer, byte[]>(indexOfPattern(fileContent, pattern));
-			if (!searchResult.isEmpty())
-				tmp.keySet().removeAll(searchResult.keySet());
-			searchResult.putAll(tmp);
-			searchResult.putAll(indexOfPattern(fileContent, pattern));
+	private void scanningFIle() {
+		for (byte[] pattern : pattern.bytes) {
+			Map<Integer, byte[]> tmp = new HashMap<Integer, byte[]>(indexOfPattern(ReadingsInFile, pattern));
+			if (!ResultofSearching.isEmpty())
+				tmp.keySet().removeAll(ResultofSearching.keySet());
+			ResultofSearching.putAll(tmp);
+			ResultofSearching.putAll(indexOfPattern(ReadingsInFile, pattern));
 		}
     }
+	
+	/**
+	 * This method Returns the indexes of the pattern when the parameters are given in a Directory
+	 * @param source   This contains the file contents
+	 * @param pattern	This contains the patterns
+	 * @return	Returns the answer 
+	 */
     
     public Map<Integer, byte[]> indexOfPattern(byte[] source, byte[] pattern) {
 		int sourceLength = source.length;
@@ -129,13 +147,39 @@ public class FileScanner {
 		return answer;
     }
     /**
-	 * Read all bytes in and store it in string format
+	 * 
+	 * This method reads all the bytes and stores it in string format.
 	 * 
 	 * @param file the file to read bytes from
 	 * @throws IOException if the file could not be read
 	 */
-	private void bytesFromFile(File file) throws IOException {
-		fileContent = Files.readAllBytes(file.toPath());
+	private void fileBytes(File file) throws IOException {
+		ReadingsInFile = Files.readAllBytes(file.toPath());
     }
+	
+	  /**
+		 * 
+		 * This method shows to sort the value pairs by key in a Map.
+		 * 
+		 * @param <K> Generic Type Key
+		 * @param <V> Generic Type Valye
+		 * @param map The map to sort
+		 * @return sorting the map by the key
+		 * 
+		 * @see https://stackoverflow.com/questions/2864840/treemap-sort-by-value
+		 * @see https://docs.oracle.com/javase/8/docs/api/java/util/TreeMap.html
+		 * 
+		 */
+		static <K extends Comparable<? super K>, V> SortedSet<Map.Entry<K, V>> sortingValuePairsByKeys(Map<K, V> map) {
+			SortedSet<Map.Entry<K, V>> sortedEntries = new TreeSet<Map.Entry<K, V>>(new Comparator<Map.Entry<K, V>>() {
+				@Override
+				public int compare(Map.Entry<K, V> e1, Map.Entry<K, V> e2) {
+					int res = e1.getKey().compareTo(e2.getKey());
+					return res != 0 ? res : 1;
+				}
+			});
+			sortedEntries.addAll(map.entrySet());
+			return sortedEntries;
+		}
   
 }
