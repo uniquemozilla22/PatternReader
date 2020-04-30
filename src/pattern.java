@@ -33,8 +33,7 @@ public class pattern extends JPanel {
 	/**
 	 * valid Byte patterns from pattern-file to scan in a file
 	 */
-	public static List<byte[]> bytes = new ArrayList<byte[]>(
-			Arrays.asList(DatatypeConverter.parseHexBinary("1ADF942853")));
+	public static List<byte[]> bytes = new ArrayList<byte[]>();
   /**
 	 * invalid lines from pattern-file
 	 */
@@ -74,7 +73,6 @@ public class pattern extends JPanel {
     
     
     patternsLists = new JList<String>();
-	patternsLists.setListData(getSpacedPatternStrings());
 	patternsLists.setBounds(10, 57, 478, 98);
 	add(patternsLists);
   }
@@ -119,7 +117,7 @@ public class pattern extends JPanel {
 				}
 				
 				// Display spaced byte pattern
-				String[] bytePatterns = getSpacedPatternStrings();
+				String[] bytePatterns = getSpacedPatternStrings(bytes);
 				patternsLists.setListData(bytePatterns);
     }
 
@@ -154,15 +152,19 @@ public class pattern extends JPanel {
 	/**
 	 *This method returns a logical patterns in a format to display. 
 	 * Returns the stored patterns in a format to display in the screen
+	 * @param bytes2 
 	 * 
 	 * @return the array of string in format of two digits and space
 	 */
-	public static String[] getSpacedPatternStrings() {
-		String[] result = new String[bytes.size()];
+	public static String[] getSpacedPatternStrings(List<byte[]> bytes2) {
+		
+		String[] result = new String[bytes2.size()];
 		// result = bytes.toArray(result);
 		for (int i = 0; i < result.length; i++) {
 			result[i] = DatatypeConverter.printHexBinary(bytes.get(i)).replaceAll("..(?!$)", "$0 ");
+			System.out.println(result[i]);
 		}
+		
 		return result;
 	}
 	
@@ -172,7 +174,7 @@ public class pattern extends JPanel {
 	 * @param sentence Passed the line to be validated in string 
 	 * @return Boolean if the line is validated or not
 	 */
-	private static boolean checkingLine(String sentence) {
+	public static boolean checkingLine(String sentence) {
 		sentence = sentence.trim();
 		if (!checkPairedHex(sentence))
 			return false;
@@ -196,7 +198,7 @@ public class pattern extends JPanel {
 	 * @param line The sentence to be checked
 	 * @return The Boolean to check hex
 	 */
-	private static boolean checkHex(String line) {
+	public static boolean checkHex(String line) {
 		for (char hexChar : line.toCharArray()) {
 			if (!Character.toString(hexChar).matches("\\d|[A-F]| ")) {
 				return false;
@@ -211,7 +213,7 @@ public class pattern extends JPanel {
 	 * @param line the line to be checked
 	 * @return the boo if the line passes or doesnot passes
 	 */
-	private static boolean checkPairedHex(String line) {
+	public static boolean checkPairedHex(String line) {
 		String[] split = line.split(" ");
 		for (int i = 0; i < split.length; i++) {
 			if (split[i].length() > 2)
