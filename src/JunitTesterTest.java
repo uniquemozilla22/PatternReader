@@ -20,20 +20,7 @@ import org.junit.Test;
 public class JunitTesterTest {
 	
 	
-	/**
-	 * This test checks for the correct format of the pattern.
-	 */
 
-    @Test
-    public void checkgetspacedstrings()
-    {
-       	//checking the line by parsing the true statement.
-    	assertTrue(pattern.checkingLine("1A DF 94 28 53"));
-    	
-    	//checking the validity by passing the false statement
-    	assertFalse(pattern.checkingLine("2897TZB323"));
-    	assertFalse(pattern.checkingLine("79 1A DF 42 8B52"));
-    }
     
     /**
      * This method checks for the working mechanism of hexchecker
@@ -51,7 +38,26 @@ public class JunitTesterTest {
     	assertTrue(pattern.checkHex(trueHexNumberPattern));
     	assertFalse(pattern.checkHex(falseHexNumberPattern));
     	
-    }
+	}
+	
+
+
+		/**
+	 * This test checks for the correct format of the pattern.
+	 */
+
+    @Test
+    public void checkLineCHecker()
+    {
+       	//checking the line by parsing the true statement.
+    	assertTrue(pattern.checkingLine("1A DF 94 28 53"));
+    	
+    	//checking the validity by passing the false statement
+    	assertFalse(pattern.checkingLine("2897TZB323"));
+    	assertFalse(pattern.checkingLine("79 1A DF 42 8B52"));
+	}
+	
+
     /**
      * This method checks for the validator method of hex checker
      */
@@ -59,18 +65,16 @@ public class JunitTesterTest {
     public void checkhexvalidator() {
 
     	//inititalizing true hex number and false hex number pattern to a string
-     	
-     	String trueHexNumberPattern="1A DF 94 28 53";
-     	String falseHexNumberPattern= "2897TZB323";
-     	
-     	
+     	String HexNumberPattern="1A DF 94 28 53";
 
-    	//checking by passing a right hex value to find error
-     	assertTrue(pattern.checkPairedHex(trueHexNumberPattern));
+    	//The result of the parsed algorithm must come true
+		 assertTrue(pattern.checkPairedHex(HexNumberPattern));
+		 
+		 HexNumberPattern= "2897TZB323";
      	
-     	//checking by passing a wrong hex value to find error
-     	assertFalse(pattern.checkPairedHex(falseHexNumberPattern));
+     	//The result of the parsed algorithm must come False
+     	assertFalse(pattern.checkPairedHex(HexNumberPattern));
      	
-     }
+	 }
 
 }

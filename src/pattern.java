@@ -158,8 +158,7 @@ public class pattern extends JPanel {
 	 */
 	public static String[] getSpacedPatternStrings(List<byte[]> bytes2) {
 		
-		String[] result = new String[bytes2.size()];
-		// result = bytes.toArray(result);
+		String[] result = new String[bytes2.size()];;
 		for (int i = 0; i < result.length; i++) {
 			result[i] = DatatypeConverter.printHexBinary(bytes.get(i)).replaceAll("..(?!$)", "$0 ");
 			System.out.println(result[i]);
